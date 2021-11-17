@@ -1,1 +1,1 @@
-github "maxkazakov/NSpry.git" "carthage"
+github "NikSativa/NSpry.git" ~> 1.2.5

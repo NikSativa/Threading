@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = "NQueueTestHelpers"
-    spec.version      = "1.1.7"
+    spec.version      = "1.1.9"
     spec.summary      = "Queue wrapper of DispatchQueue"
 
     spec.source       = { :git => "git@github.com:NikSativa/NQueue.git" }
