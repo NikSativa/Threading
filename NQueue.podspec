@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = "NQueue"
-    spec.version      = "1.1.9"
+    spec.version      = "1.1.10"
     spec.summary      = "Queue wrapper of DispatchQueue"
 
     spec.source       = { :git => "git@github.com:NikSativa/NQueue.git" }
