@@ -202,9 +202,9 @@ private enum Impl {
         public init(kind: Mutex.Kind) {
             switch kind {
             case .normal:
-                _lock = Foundation.NSLock()
+                self._lock = Foundation.NSLock()
             case .recursive:
-                _lock = Foundation.NSRecursiveLock()
+                self._lock = Foundation.NSRecursiveLock()
             }
         }
 
