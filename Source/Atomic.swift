@@ -142,8 +142,7 @@ private protocol Locking {
     func unlock()
 }
 
-private protocol SimpleMutexing: Mutexing, Locking {
-}
+private protocol SimpleMutexing: Mutexing, Locking {}
 
 private extension SimpleMutexing {
     @discardableResult
