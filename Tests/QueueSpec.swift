@@ -1,10 +1,9 @@
 import Foundation
 import Nimble
-import NSpry
-import Quick
-
 import NQueue
 import NQueueTestHelpers
+import NSpry
+import Quick
 
 final class QueueSpec: QuickSpec {
     override func spec() {

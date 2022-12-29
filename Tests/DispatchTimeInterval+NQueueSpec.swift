@@ -1,11 +1,9 @@
 import Foundation
-
 import Nimble
-import NSpry
-import Quick
-
 import NQueue
 import NQueueTestHelpers
+import NSpry
+import Quick
 
 final class DispatchTimeInterval_NQueueSpec: QuickSpec {
     override func spec() {

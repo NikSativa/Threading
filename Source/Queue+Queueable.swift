@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - Queue + Queueable
+
 extension Queue: Queueable {
     public func async(execute workItem: @escaping () -> Void) {
         sdk.async(execute: workItem)

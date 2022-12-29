@@ -1,7 +1,8 @@
 import Foundation
+import NQueue
 import NSpry
 
-import NQueue
+// MARK: - DelayedQueue + Equatable, SpryEquatable
 
 extension DelayedQueue: Equatable, SpryEquatable {
     public static func ==(lhs: DelayedQueue, rhs: DelayedQueue) -> Bool {
