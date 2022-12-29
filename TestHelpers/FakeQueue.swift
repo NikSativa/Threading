@@ -1,7 +1,6 @@
 import Foundation
-import NSpry
-
 import NQueue
+import NSpry
 
 final class FakeQueueable: Queueable, Spryable {
     enum ClassFunction: String, StringRepresentable {

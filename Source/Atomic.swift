@@ -166,11 +166,15 @@ private extension SimpleMutexing {
     }
 }
 
+// MARK: - NSLock + Locking
+
 extension NSLock: Locking {
     func tryLock() -> Bool {
         return self.try()
     }
 }
+
+// MARK: - NSRecursiveLock + Locking
 
 extension NSRecursiveLock: Locking {
     func tryLock() -> Bool {
