@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattgallagher/CwlCatchException.git",
       "state" : {
-        "revision" : "f809deb30dc5c9d9b78c872e553261a61177721a",
-        "version" : "2.0.0"
+        "revision" : "35f9e770f54ce62dd8526470f14c6e137cef3eea",
+        "version" : "2.1.1"
       }
     },
     {
@@ -19,30 +19,12 @@
       }
     },
     {
-      "identity" : "nimble",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Quick/Nimble.git",
-      "state" : {
-        "revision" : "b7f6c49acdb247e3158198c5448b38c3cc595533",
-        "version" : "11.2.1"
-      }
-    },
-    {
       "identity" : "nspry",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NikSativa/NSpry.git",
       "state" : {
-        "revision" : "ac81bc9c46e2e79905b8b066d9f19964584f4dce",
-        "version" : "1.3.3"
-      }
-    },
-    {
-      "identity" : "quick",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Quick/Quick.git",
-      "state" : {
-        "revision" : "16910e406be96e08923918315388c3e989deac9e",
-        "version" : "6.1.0"
+        "revision" : "eb1afc57f1c6a425f19a00dd7d06f3f681821e40",
+        "version" : "2.0.0"
       }
     }
   ],
