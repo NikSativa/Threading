@@ -13,7 +13,7 @@ let package = Package(
         .library(name: "NQueueTestHelpers", targets: ["NQueueTestHelpers"])
     ],
     dependencies: [
-        .package(url: "https://github.com/NikSativa/NSpry.git", .upToNextMajor(from: "2.0.0"))
+        .package(url: "https://github.com/NikSativa/NSpry.git", .upToNextMajor(from: "2.0.4"))
     ],
     targets: [
         .target(name: "NQueue",
