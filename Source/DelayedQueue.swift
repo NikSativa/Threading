@@ -27,4 +27,38 @@ public extension DelayedQueue {
                              execute: workItem)
         }
     }
+
+    /// namespace for shortcut
+    ///
+    /// interface:
+    /// ```swift
+    /// func set(_ queue: DelayedQueue)
+    /// ```
+    /// call will be:
+    /// ```swift
+    /// set(.n.sync(.main))
+    /// ```
+    /// instead of
+    /// ```swift
+    /// set(.sync(Queue.main))
+    /// ```
+    enum n {}
+}
+
+public extension DelayedQueue.n {
+    static func sync(_ q: Queue) -> DelayedQueue {
+        return .sync(q)
+    }
+
+    static func async(_ q: Queue) -> DelayedQueue {
+        return .async(q)
+    }
+
+    static func asyncAfter(deadline: DispatchTime, queue: Queue) -> DelayedQueue {
+        return .asyncAfter(deadline: deadline, queue: queue)
+    }
+
+    static func asyncAfter(deadline: DispatchTime, flags: Queue.Flags, queue: Queue) -> DelayedQueue {
+        return .asyncAfterWithFlags(deadline: deadline, flags: flags, queue: queue)
+    }
 }
