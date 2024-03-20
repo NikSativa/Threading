@@ -52,7 +52,7 @@ final class FakeQueueable: Queueable, Spryable {
 
     func sync<T>(flags: Queue.Flags, execute work: () throws -> T) rethrows -> T {
         if shouldFireSyncClosures {
-            return spryify(arguments: flags, fallbackValue: try work())
+            return try spryify(arguments: flags, fallbackValue: work())
         }
 
         return spryify(arguments: flags)
@@ -60,7 +60,7 @@ final class FakeQueueable: Queueable, Spryable {
 
     func sync<T>(execute work: () throws -> T) rethrows -> T {
         if shouldFireSyncClosures {
-            return spryify(fallbackValue: try work())
+            return try spryify(fallbackValue: work())
         }
 
         return spryify()
