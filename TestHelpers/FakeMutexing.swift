@@ -16,14 +16,14 @@ final class FakeMutexing: Mutexing, Spryable {
 
     func sync<R>(execute work: () throws -> R) rethrows -> R {
         if shouldFireClosures {
-            return spryify(fallbackValue: try work())
+            return try spryify(fallbackValue: work())
         }
         return spryify()
     }
 
     func trySync<R>(execute work: () throws -> R) rethrows -> R {
         if shouldFireClosures {
-            return spryify(fallbackValue: try work())
+            return try spryify(fallbackValue: work())
         }
         return spryify()
     }

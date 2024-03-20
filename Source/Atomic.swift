@@ -37,7 +37,7 @@ public enum Mutex {
     }
 
     public static var `default`: Mutexing {
-        return Self.pthread(.recursive)
+        return pthread(.recursive)
     }
 }
 
