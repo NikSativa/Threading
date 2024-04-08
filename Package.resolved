@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattgallagher/CwlCatchException.git",
       "state" : {
-        "revision" : "3b123999de19bf04905bc1dfdb76f817b0f2cc00",
-        "version" : "2.1.2"
+        "revision" : "3ef6999c73b6938cc0da422f2c912d0158abb0a0",
+        "version" : "2.2.0"
       }
     },
     {
@@ -19,12 +19,12 @@
       }
     },
     {
-      "identity" : "nspry",
+      "identity" : "sprykit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/NikSativa/NSpry.git",
+      "location" : "https://github.com/NikSativa/SpryKit.git",
       "state" : {
-        "revision" : "2bd07efd49af15a1afd1e44ea9212383c55d3a31",
-        "version" : "2.1.4"
+        "revision" : "e15daa49ecd106aeceab734e4fd7207e26a8ba4c",
+        "version" : "2.2.0"
       }
     }
   ],

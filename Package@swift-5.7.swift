@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "NQueue",
+    name: "Threading",
     platforms: [
         .iOS(.v13),
         .macOS(.v11),
@@ -12,33 +12,33 @@ let package = Package(
         .watchOS(.v6)
     ],
     products: [
-        .library(name: "NQueue", targets: ["NQueue"]),
-        .library(name: "NQueueTestHelpers", targets: ["NQueueTestHelpers"])
+        .library(name: "Threading", targets: ["Threading"]),
+        .library(name: "ThreadingTestHelpers", targets: ["ThreadingTestHelpers"])
     ],
     dependencies: [
         .package(url: "https://github.com/NikSativa/NSpry.git", .upToNextMajor(from: "2.1.4"))
     ],
     targets: [
-        .target(name: "NQueue",
+        .target(name: "Threading",
                 dependencies: [
                 ],
                 path: "Source",
                 resources: [
                     .copy("../PrivacyInfo.xcprivacy")
                 ]),
-        .target(name: "NQueueTestHelpers",
+        .target(name: "ThreadingTestHelpers",
                 dependencies: [
-                    "NQueue",
+                    "Threading",
                     "NSpry"
                 ],
                 path: "TestHelpers",
                 resources: [
                     .copy("../PrivacyInfo.xcprivacy")
                 ]),
-        .testTarget(name: "NQueueTests",
+        .testTarget(name: "ThreadingTests",
                     dependencies: [
-                        "NQueue",
-                        "NQueueTestHelpers",
+                        "Threading",
+                        "ThreadingTestHelpers",
                         "NSpry"
                     ],
                     path: "Tests")

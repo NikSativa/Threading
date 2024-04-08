@@ -1,6 +1,6 @@
 import Foundation
-import NQueue
-import NSpry
+import SpryKit
+import Threading
 
 // MARK: - DelayedQueue + Equatable, SpryEquatable
 

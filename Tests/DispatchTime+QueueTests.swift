@@ -1,10 +1,8 @@
 import Dispatch
 import Foundation
-import NSpry
+import SpryKit
+import Threading
 import XCTest
-
-@testable import NQueue
-@testable import NQueueTestHelpers
 
 final class DispatchTime_QueueTests: XCTestCase {
     func test_seconds() {
