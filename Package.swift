@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "NQueue",
+    name: "Threading",
     platforms: [
         .iOS(.v13),
         .macOS(.v11),
@@ -13,34 +13,34 @@ let package = Package(
         .watchOS(.v6)
     ],
     products: [
-        .library(name: "NQueue", targets: ["NQueue"]),
-        .library(name: "NQueueTestHelpers", targets: ["NQueueTestHelpers"])
+        .library(name: "Threading", targets: ["Threading"]),
+        .library(name: "ThreadingTestHelpers", targets: ["ThreadingTestHelpers"])
     ],
     dependencies: [
-        .package(url: "https://github.com/NikSativa/NSpry.git", .upToNextMajor(from: "2.1.4"))
+        .package(url: "https://github.com/NikSativa/SpryKit.git", .upToNextMajor(from: "2.2.0"))
     ],
     targets: [
-        .target(name: "NQueue",
+        .target(name: "Threading",
                 dependencies: [
                 ],
                 path: "Source",
                 resources: [
                     .copy("../PrivacyInfo.xcprivacy")
                 ]),
-        .target(name: "NQueueTestHelpers",
+        .target(name: "ThreadingTestHelpers",
                 dependencies: [
-                    "NQueue",
-                    "NSpry"
+                    "Threading",
+                    "SpryKit"
                 ],
                 path: "TestHelpers",
                 resources: [
                     .copy("../PrivacyInfo.xcprivacy")
                 ]),
-        .testTarget(name: "NQueueTests",
+        .testTarget(name: "ThreadingTests",
                     dependencies: [
-                        "NQueue",
-                        "NQueueTestHelpers",
-                        "NSpry"
+                        "Threading",
+                        "ThreadingTestHelpers",
+                        "SpryKit"
                     ],
                     path: "Tests")
     ]

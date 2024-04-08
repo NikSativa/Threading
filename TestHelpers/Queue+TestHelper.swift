@@ -1,6 +1,6 @@
 import Foundation
-import NQueue
-import NSpry
+import SpryKit
+import Threading
 
 extension Queue: SpryEquatable {}
 extension Queue.Attributes: SpryEquatable {}

@@ -1,10 +1,9 @@
 import Dispatch
 import Foundation
-import NSpry
+import SpryKit
+import Threading
+import ThreadingTestHelpers
 import XCTest
-
-@testable import NQueue
-@testable import NQueueTestHelpers
 
 final class DelayedQueueTests: XCTestCase {
     // MARK: - fake
