@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "ThreadingTestHelpers", targets: ["ThreadingTestHelpers"])
     ],
     dependencies: [
-        .package(url: "https://github.com/NikSativa/NSpry.git", .upToNextMajor(from: "2.1.4"))
+        .package(url: "https://github.com/NikSativa/SpryKit.git", .upToNextMajor(from: "2.2.1"))
     ],
     targets: [
         .target(name: "Threading",
@@ -29,7 +29,7 @@ let package = Package(
         .target(name: "ThreadingTestHelpers",
                 dependencies: [
                     "Threading",
-                    "NSpry"
+                    "SpryKit"
                 ],
                 path: "TestHelpers",
                 resources: [
@@ -39,7 +39,7 @@ let package = Package(
                     dependencies: [
                         "Threading",
                         "ThreadingTestHelpers",
-                        "NSpry"
+                        "SpryKit"
                     ],
                     path: "Tests")
     ]

@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NikSativa/SpryKit.git",
       "state" : {
-        "revision" : "e15daa49ecd106aeceab734e4fd7207e26a8ba4c",
-        "version" : "2.2.0"
+        "revision" : "68d9a9411e01b6b0edd56c2b7e4739db65111053",
+        "version" : "2.2.1"
       }
     }
   ],

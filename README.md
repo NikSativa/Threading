@@ -14,7 +14,7 @@ Queue.main.sync {
 }
 ‘’’
 
-**Queueable** protocol can help you test your code without threading by overriding real implementation via your own mock or existing Fake from NSpry framework
+**Queueable** protocol can help you test your code without threading by overriding real implementation via your own mock or existing Fake from SpryKit framework
 
 **DelayedQueue** make it simple to manage task execution as parameter at your discretion
 
