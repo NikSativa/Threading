@@ -17,7 +17,7 @@ let package = Package(
         .library(name: "ThreadingTestHelpers", targets: ["ThreadingTestHelpers"])
     ],
     dependencies: [
-        .package(url: "https://github.com/NikSativa/SpryKit.git", .upToNextMajor(from: "2.2.1"))
+        .package(url: "https://github.com/NikSativa/SpryKit.git", .upToNextMajor(from: "2.2.2"))
     ],
     targets: [
         .target(name: "Threading",
