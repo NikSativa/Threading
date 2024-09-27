@@ -9,6 +9,27 @@ public enum DelayedQueue {
     case asyncAfterWithFlags(deadline: DispatchTime, flags: Queue.Flags, queue: Queueable)
 }
 
+#if swift(>=6.0)
+extension DelayedQueue: Sendable {
+    public func fire(_ workItem: @escaping @Sendable () -> Void) {
+        switch self {
+        case .absent:
+            workItem()
+        case .sync(let queue):
+            queue.sync(execute: workItem)
+        case .async(let queue):
+            queue.async(execute: workItem)
+        case .asyncAfter(let deadline, let queue):
+            queue.asyncAfter(deadline: deadline,
+                             execute: workItem)
+        case .asyncAfterWithFlags(let deadline, let flags, let queue):
+            queue.asyncAfter(deadline: deadline,
+                             flags: flags,
+                             execute: workItem)
+        }
+    }
+}
+#else
 public extension DelayedQueue {
     func fire(_ workItem: @escaping () -> Void) {
         switch self {
@@ -27,7 +48,12 @@ public extension DelayedQueue {
                              execute: workItem)
         }
     }
+}
+#endif
 
+// MARK: - DelayedQueue.n
+
+public extension DelayedQueue {
     /// namespace for shortcut
     ///
     /// interface:

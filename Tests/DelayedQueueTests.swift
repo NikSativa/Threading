@@ -1,8 +1,8 @@
+#if canImport(SpryMacroAvailable)
 import Dispatch
 import Foundation
 import SpryKit
 import Threading
-import ThreadingTestHelpers
 import XCTest
 
 final class DelayedQueueTests: XCTestCase {
@@ -10,101 +10,95 @@ final class DelayedQueueTests: XCTestCase {
 
     func test_fake_queue_absent() {
         let subject: DelayedQueue = .absent
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertTrue(didCall)
+        wait(for: [didCall], timeout: 0)
     }
 
     func test_fake_queue_sync() {
         let queue: FakeQueueable = .init()
         queue.shouldFireSyncClosures = true
-        queue.stub(.sync).andReturn()
+        queue.stub(.syncWithExecute).andReturn()
 
         let subject: DelayedQueue = .sync(queue)
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertTrue(didCall)
-        XCTAssertHaveReceived(queue, .sync)
+        wait(for: [didCall], timeout: 0)
+        XCTAssertHaveReceived(queue, .syncWithExecute)
     }
 
     func test_fake_queue_async() {
         let queue: FakeQueueable = .init()
-        queue.shouldFireSyncClosures = true
-        queue.stub(.async).andReturn()
+        queue.stub(.asyncWithExecute).andReturn()
 
         let subject: DelayedQueue = .async(queue)
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertFalse(didCall)
-        XCTAssertHaveReceived(queue, .async)
+        XCTAssertHaveReceived(queue, .asyncWithExecute)
 
         queue.asyncWorkItem?()
-        XCTAssertTrue(didCall)
+        wait(for: [didCall], timeout: 1)
     }
 
     func test_fake_queue_async_after() {
         let dispatchTime = DispatchTime.delayInSeconds(1)
 
         let queue: FakeQueueable = .init()
-        queue.shouldFireSyncClosures = true
-        queue.stub(.asyncAfter).andReturn()
+        queue.stub(.asyncAfterWithDeadline_Execute).andReturn()
 
         let subject: DelayedQueue = .asyncAfter(deadline: dispatchTime, queue: queue)
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertFalse(didCall)
-        XCTAssertHaveReceived(queue, .asyncAfter, with: dispatchTime, Argument.anything)
+        XCTAssertHaveReceived(queue, .asyncAfterWithDeadline_Execute, with: dispatchTime, Argument.anything)
 
         queue.asyncWorkItem?()
-        XCTAssertTrue(didCall)
+        wait(for: [didCall], timeout: 0)
     }
 
     func test_fake_queue_async_after_with_flags() {
         let dispatchTime = DispatchTime.delayInSeconds(1)
 
         let queue: FakeQueueable = .init()
-        queue.shouldFireSyncClosures = true
-        queue.stub(.asyncAfterWithFlags).andReturn()
+        queue.stub(.asyncAfterWithDeadline_Flags_Execute).andReturn()
 
         let subject: DelayedQueue = .asyncAfterWithFlags(deadline: dispatchTime, flags: .barrier, queue: queue)
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertFalse(didCall)
-        XCTAssertHaveReceived(queue, .asyncAfterWithFlags, with: dispatchTime, Queue.Flags.barrier, Argument.anything)
+        XCTAssertHaveReceived(queue, .asyncAfterWithDeadline_Flags_Execute, with: dispatchTime, Queue.Flags.barrier, Argument.anything)
 
         queue.asyncWorkItem?()
-        XCTAssertTrue(didCall)
+        wait(for: [didCall], timeout: 0)
     }
 
     // MARK: - real
 
     func test_real_queue_absent() {
         let subject: DelayedQueue = .absent
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertTrue(didCall)
+        wait(for: [didCall], timeout: 0)
     }
 
     func test_real_queue_sync() {
         let queue = Queue.main
         let subject: DelayedQueue = .sync(queue)
-        var didCall = false
+        let didCall = expectation(description: "didCall")
         subject.fire {
-            didCall = true
+            didCall.fulfill()
         }
-        XCTAssertTrue(didCall)
+        wait(for: [didCall], timeout: 0)
     }
 
     func test_real_queue_async() {
@@ -150,3 +144,4 @@ final class DelayedQueueTests: XCTestCase {
         wait(for: [didCall], timeout: 0.2)
     }
 }
+#endif

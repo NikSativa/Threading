@@ -1,3 +1,4 @@
+import Dispatch
 import Foundation
 
 public struct Queue: Equatable {
@@ -11,7 +12,7 @@ public struct Queue: Equatable {
         case barrier
     }
 
-    private enum Kind: Equatable {
+    fileprivate enum Kind: Equatable {
         case main
         case custom(label: String,
                     qos: DispatchQoS = .default,
@@ -24,39 +25,44 @@ public struct Queue: Equatable {
         case userInteractive
     }
 
-    public static var main: Self {
+    let sdk: DispatchQueue
+    private let kind: Kind
+}
+
+public extension Queue {
+    static var main: Self {
         return Queue(kind: .main,
                      sdk: .main)
     }
 
-    public static var background: Self {
+    static var background: Self {
         return Queue(kind: .background,
                      sdk: .global(qos: .background))
     }
 
-    public static var utility: Self {
+    static var utility: Self {
         return Queue(kind: .utility,
                      sdk: .global(qos: .utility))
     }
 
-    public static var `default`: Self {
+    static var `default`: Self {
         return Queue(kind: .default,
                      sdk: .global(qos: .default))
     }
 
-    public static var userInitiated: Self {
+    static var userInitiated: Self {
         return Queue(kind: .userInitiated,
                      sdk: .global(qos: .userInitiated))
     }
 
-    public static var userInteractive: Self {
+    static var userInteractive: Self {
         return Queue(kind: .userInteractive,
                      sdk: .global(qos: .userInteractive))
     }
 
-    public static func custom(label: String,
-                              qos: DispatchQoS = .default,
-                              attributes: Attributes = .concurrent) -> Self {
+    static func custom(label: String,
+                       qos: DispatchQoS = .default,
+                       attributes: Attributes = .concurrent) -> Self {
         return Queue(kind: .custom(label: label,
                                    qos: qos,
                                    attributes: attributes),
@@ -64,9 +70,6 @@ public struct Queue: Equatable {
                                 qos: qos,
                                 attributes: attributes.toSDK()))
     }
-
-    public let sdk: DispatchQueue
-    private let kind: Kind
 
     internal var isMain: Bool {
         return kind == .main
@@ -89,3 +92,10 @@ private extension Queue.Attributes {
         }
     }
 }
+
+#if swift(>=6.0)
+extension Queue: @unchecked Sendable {}
+extension Queue.Attributes: Sendable {}
+extension Queue.Flags: Sendable {}
+extension Queue.Kind: Sendable {}
+#endif

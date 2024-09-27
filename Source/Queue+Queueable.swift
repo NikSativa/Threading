@@ -3,6 +3,26 @@ import Foundation
 // MARK: - Queue + Queueable
 
 extension Queue: Queueable {
+    #if swift(>=6.0)
+    public func async(execute workItem: @escaping @Sendable () -> Void) {
+        sdk.async(execute: workItem)
+    }
+
+    public func asyncAfter(deadline: DispatchTime,
+                           flags: Queue.Flags,
+                           execute work: @escaping @Sendable () -> Void) {
+        sdk.asyncAfter(deadline: deadline,
+                       flags: flags.toSDK(),
+                       execute: work)
+    }
+
+    public func asyncAfter(deadline: DispatchTime,
+                           execute work: @escaping @Sendable () -> Void) {
+        asyncAfter(deadline: deadline,
+                   flags: .absent,
+                   execute: work)
+    }
+    #else
     public func async(execute workItem: @escaping () -> Void) {
         sdk.async(execute: workItem)
     }
@@ -21,6 +41,7 @@ extension Queue: Queueable {
                    flags: .absent,
                    execute: work)
     }
+    #endif
 
     public func sync(execute workItem: () -> Void) {
         if isMainThread {

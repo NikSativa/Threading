@@ -1,5 +1,14 @@
 import Foundation
 
+#if swift(>=6.0)
+public protocol Mutexing: Sendable {
+    @discardableResult
+    func sync<R>(execute work: () throws -> R) rethrows -> R
+
+    @discardableResult
+    func trySync<R>(execute work: () throws -> R) rethrows -> R
+}
+#else
 public protocol Mutexing {
     @discardableResult
     func sync<R>(execute work: () throws -> R) rethrows -> R
@@ -7,6 +16,7 @@ public protocol Mutexing {
     @discardableResult
     func trySync<R>(execute work: () throws -> R) rethrows -> R
 }
+#endif
 
 public enum Mutex {
     public enum Kind {
@@ -136,11 +146,19 @@ public extension Atomic where Value: ExpressibleByNilLiteral {
     }
 }
 
+#if swift(>=6.0)
+private protocol Locking: Sendable {
+    func lock()
+    func tryLock() -> Bool
+    func unlock()
+}
+#else
 private protocol Locking {
     func lock()
     func tryLock() -> Bool
     func unlock()
 }
+#endif
 
 private protocol SimpleMutexing: Mutexing, Locking {}
 
@@ -301,3 +319,15 @@ private enum Impl {
         }
     }
 }
+
+#if swift(>=6.0)
+extension Mutex: Sendable {}
+extension Mutex.Kind: Sendable {}
+extension AtomicOption: Sendable {}
+extension Atomic: @unchecked Sendable {}
+extension Impl.Barrier: @unchecked Sendable {}
+extension Impl.NSLock: @unchecked Sendable {}
+extension Impl.PThread: @unchecked Sendable {}
+extension Impl.Semaphore: @unchecked Sendable {}
+extension Impl.Unfair: @unchecked Sendable {}
+#endif
