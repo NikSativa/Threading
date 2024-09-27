@@ -2,9 +2,9 @@ import Foundation
 import SpryKit
 import Threading
 
-// MARK: - DelayedQueue + Equatable, SpryEquatable
+// MARK: - DelayedQueue + Equatable
 
-extension DelayedQueue: Equatable, SpryEquatable {
+extension DelayedQueue: Equatable {
     public static func ==(lhs: DelayedQueue, rhs: DelayedQueue) -> Bool {
         switch (lhs, rhs) {
         case (.absent, .absent):
