@@ -1,5 +1,11 @@
 import Foundation
 
+/// - Note: use namespace __`DelayedQueue.n.<func name>`__ to simplify code usage.
+/// ```swift
+/// func run(in queue: DelayedQueue) { ... }
+/// // somewhere where you need
+/// run(.n.async(.main))
+/// ```
 public enum DelayedQueue {
     case absent
     case sync(Queueable)
