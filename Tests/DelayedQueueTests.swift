@@ -50,14 +50,14 @@ final class DelayedQueueTests: XCTestCase {
         let dispatchTime = DispatchTime.delayInSeconds(1)
 
         let queue: FakeQueueable = .init()
-        queue.stub(.asyncAfterWithDeadline_Execute).andReturn()
+        queue.stub(.asyncAfterWithDeadline_Flags_Execute).andReturn()
 
         let subject: DelayedQueue = .asyncAfter(deadline: dispatchTime, queue: queue)
         let didCall = expectation(description: "didCall")
         subject.fire {
             didCall.fulfill()
         }
-        XCTAssertHaveReceived(queue, .asyncAfterWithDeadline_Execute, with: dispatchTime, Argument.anything)
+        XCTAssertHaveReceived(queue, .asyncAfterWithDeadline_Flags_Execute, with: dispatchTime, Queue.Flags.absent, Argument.anything)
 
         queue.asyncWorkItem?()
         wait(for: [didCall], timeout: 0)
