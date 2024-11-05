@@ -6,21 +6,16 @@ import Threading
 @Spryable
 final class FakeQueueable: Queueable, @unchecked Sendable {
     var shouldFireSyncClosures: Bool = false
-    var asyncWorkItem: (() -> Void)?
+    var asyncWorkItem: WorkItem?
 
-    func async(execute workItem: @escaping () -> Void) {
+    func async(execute workItem: @escaping WorkItem) {
         asyncWorkItem = workItem
         return spryify(arguments: workItem)
     }
 
-    func asyncAfter(deadline: DispatchTime, flags: Queue.Flags, execute work: @escaping () -> Void) {
+    func asyncAfter(deadline: DispatchTime, flags: Queue.Flags, execute work: @escaping WorkItem) {
         asyncWorkItem = work
         return spryify(arguments: deadline, flags, work)
-    }
-
-    func asyncAfter(deadline: DispatchTime, execute work: @escaping () -> Void) {
-        asyncWorkItem = work
-        return spryify(arguments: deadline, work)
     }
 
     func sync(execute workItem: () -> Void) {

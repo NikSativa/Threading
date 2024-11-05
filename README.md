@@ -60,12 +60,12 @@ Queue.isolatedMain.sync {
 }
 ```
 
-UnSendable - is a struct that helps you to avoid concurrency check of non-Sendable objects (ex. using UI elements). It is not a silver bullet, but it can help you to avoid some issues.
+USendable - is a struct that helps you to avoid concurrency check of non-Sendable objects (ex. using UI elements). It is not a silver bullet, but it can help you to avoid some issues.
 > [!WARNING]
 > **Use at your own risk.**
 
 ```swift
-let unsafe = UnSendable(ImageView())
+let unsafe = USendable(ImageView())
 Queue.main.async {
     let view = unsafe.value
     // make your magic

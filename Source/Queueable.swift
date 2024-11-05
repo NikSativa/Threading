@@ -2,13 +2,11 @@ import Foundation
 
 #if swift(>=6.0)
 public protocol Queueable: Sendable {
-    func async(execute workItem: @escaping @Sendable () -> Void)
+    typealias WorkItem = @Sendable () -> Void
 
-    func asyncAfter(deadline: DispatchTime,
-                    flags: Queue.Flags,
-                    execute work: @escaping @Sendable () -> Void)
-    func asyncAfter(deadline: DispatchTime,
-                    execute work: @escaping @Sendable () -> Void)
+    func async(execute workItem: @escaping WorkItem)
+
+    func asyncAfter(deadline: DispatchTime, flags: Queue.Flags, execute work: @escaping WorkItem)
 
     func sync(execute workItem: () -> Void)
     func sync(execute workItem: () throws -> Void) rethrows
@@ -21,13 +19,11 @@ public protocol Queueable: Sendable {
 }
 #else
 public protocol Queueable {
-    func async(execute workItem: @escaping () -> Void)
+    typealias WorkItem = () -> Void
 
-    func asyncAfter(deadline: DispatchTime,
-                    flags: Queue.Flags,
-                    execute work: @escaping () -> Void)
-    func asyncAfter(deadline: DispatchTime,
-                    execute work: @escaping () -> Void)
+    func async(execute workItem: @escaping WorkItem)
+
+    func asyncAfter(deadline: DispatchTime, flags: Queue.Flags, execute work: @escaping WorkItem)
 
     func sync(execute workItem: () -> Void)
     func sync(execute workItem: () throws -> Void) rethrows
@@ -39,3 +35,9 @@ public protocol Queueable {
     func sync<T>(execute work: () -> T) -> T
 }
 #endif
+
+public extension Queueable {
+    func asyncAfter(deadline: DispatchTime, execute work: @escaping WorkItem) {
+        asyncAfter(deadline: deadline, flags: .absent, execute: work)
+    }
+}
