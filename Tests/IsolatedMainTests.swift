@@ -2,15 +2,9 @@ import Foundation
 import Threading
 import XCTest
 
-#if swift(>=6.0)
 private struct MainActorOnly: Sendable {
     var value: Int = 1
 }
-#else
-private struct MainActorOnly {
-    var value: Int = 1
-}
-#endif
 
 private enum MainActorError: Error {
     case someError
