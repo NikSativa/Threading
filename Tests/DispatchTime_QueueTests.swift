@@ -1,5 +1,4 @@
 #if !os(watchOS)
-import Dispatch
 import Foundation
 import SpryKit
 import Threading

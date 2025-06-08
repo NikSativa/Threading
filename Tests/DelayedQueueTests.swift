@@ -1,13 +1,10 @@
 #if canImport(SpryMacroAvailable)
-import Dispatch
 import Foundation
 import SpryKit
 import Threading
 import XCTest
 
 final class DelayedQueueTests: XCTestCase {
-    // MARK: - fake
-
     func test_fake_queue_absent() {
         let subject: DelayedQueue = .absent
         let didCall = expectation(description: "didCall")
@@ -79,8 +76,6 @@ final class DelayedQueueTests: XCTestCase {
         queue.asyncWorkItem?()
         wait(for: [didCall], timeout: 0)
     }
-
-    // MARK: - real
 
     func test_real_queue_absent() {
         let subject: DelayedQueue = .absent
