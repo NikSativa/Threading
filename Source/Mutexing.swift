@@ -180,9 +180,11 @@ public extension Mutexing where Value: Sendable {
     /// }
     /// ```
     @discardableResult
-    func dynamicallyCall(withArguments args: [@Sendable (inout Value) throws -> Sendable]) throws -> Sendable? {
+    func dynamicallyCall<T>(withArguments args: [@Sendable (inout Value) throws -> T]) throws -> T
+    where T: Sendable {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return try sync(body)
@@ -204,9 +206,11 @@ public extension Mutexing where Value: Sendable {
     /// }
     /// ```
     @discardableResult
-    func dynamicallyCall(withArguments args: [@Sendable () throws -> Sendable]) throws -> Sendable? {
+    func dynamicallyCall<T>(withArguments args: [@Sendable () throws -> T]) throws -> T
+    where T: Sendable {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return try sync(body)
@@ -227,9 +231,11 @@ public extension Mutexing where Value: Sendable {
     /// }
     /// ```
     @discardableResult
-    func dynamicallyCall(withArguments args: [@Sendable (inout Value) -> Sendable]) -> Sendable? {
+    func dynamicallyCall<T>(withArguments args: [@Sendable (inout Value) -> T]) -> T
+    where T: Sendable {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return sync(body)
@@ -250,9 +256,11 @@ public extension Mutexing where Value: Sendable {
     /// }
     /// ```
     @discardableResult
-    func dynamicallyCall(withArguments args: [@Sendable () -> Sendable]) -> Sendable? {
+    func dynamicallyCall<T>(withArguments args: [@Sendable () -> T]) -> T
+    where T: Sendable {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return sync(body)
@@ -276,12 +284,37 @@ public extension Mutexing {
     /// }
     /// ```
     @discardableResult
-    func dynamicallyCall<R>(withArguments args: [(inout Value) throws -> R]) throws -> R? {
+    func dynamicallyCall<R>(withArguments args: [(inout Value) throws -> R]) throws -> R {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return try syncUnchecked(body)
+    }
+
+    /// Dynamically calls the mutex with a non-throwing closure that receives `inout` access to the protected value (unchecked).
+    ///
+    /// Bypasses `Sendable` checking. Use only when `Value` does not conform to `Sendable`.
+    ///
+    /// - Parameter args: An array of non-throwing closures.
+    /// - Returns: The result of the first closure.
+    ///
+    /// ### Example
+    /// ```swift
+    /// let result = mutex { value in
+    ///     value.counter = 10
+    ///     return value
+    /// }
+    /// ```
+    @discardableResult
+    func dynamicallyCall<R>(withArguments args: [(inout Value) -> R]) -> R {
+        precondition(args.count == 1, "Only one argument is allowed")
+        guard let body = args.first else {
+            fatalError("Expected a single closure")
+        }
+
+        return syncUnchecked(body)
     }
 
     /// Dynamically calls the mutex with a throwing closure that does not access the protected value (unchecked).
@@ -299,36 +332,13 @@ public extension Mutexing {
     ///     return 42
     /// }
     /// ```
-    @discardableResult
     func dynamicallyCall<R>(withArguments args: [() throws -> R]) throws -> R? {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return try trySyncUnchecked(body)
-    }
-
-    /// Dynamically calls the mutex with a non-throwing closure that receives `inout` access to the protected value (unchecked).
-    ///
-    /// Only the first closure is executed. Use this overload when `Value` does not conform to `Sendable`.
-    ///
-    /// - Parameter args: An array of closures.
-    /// - Returns: The result of the first closure if available; otherwise, `nil`.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let result = mutex { value in
-    ///     value += 10
-    ///     return value
-    /// }
-    /// ```
-    @discardableResult
-    func dynamicallyCall<R>(withArguments args: [(inout Value) -> R]) -> R? {
-        guard let body = args.first else {
-            return nil
-        }
-
-        return trySyncUnchecked(body)
     }
 
     /// Dynamically calls the mutex with a non-throwing, sendable closure.
@@ -346,9 +356,10 @@ public extension Mutexing {
     /// }
     /// ```
     @discardableResult
-    func dynamicallyCall<R>(withArguments args: [@Sendable () -> R]) -> R? {
+    func dynamicallyCall<R>(withArguments args: [() -> R]) -> R {
+        precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
-            return nil
+            fatalError("Expected a single closure")
         }
 
         return syncUnchecked(body)
