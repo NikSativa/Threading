@@ -139,7 +139,7 @@ final class AtomicTests: XCTestCase {
         counter = 1
         XCTAssertEqual(counter.counter, 1)
 
-        $counter { $0 = 10 }
+        $counter { $0.counter = 10 }
         XCTAssertEqual(counter.counter, 10)
 
         @AtomicValue

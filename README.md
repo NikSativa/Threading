@@ -26,14 +26,15 @@ Threading provides several key components:
 
 ### Synchronization
 
-- ``Mutexing``: A protocol for synchronized access to values; supports blocking and non-blocking execution with error propagation.
-- ``Locking``: A protocol for lock implementations, supporting core locking behaviors, including recursive locks.
+- ``Mutexing``: A protocol for synchronized access to values; supports blocking and non-blocking execution with error propagation. Supports `@dynamicCallable` and `@dynamicMemberLookup` for convenient syntax.
+- ``Locking``: A protocol for lock implementations, supporting core locking behaviors, including recursive locks. Supports `@dynamicCallable` for functional-style syntax.
 - ``AnyMutex``: A type-erased wrapper around any `Mutexing` implementation.
 - ``AnyLock``: A type-erased wrapper around any `Locking` implementation.
 
 ### Mutex Implementations
 
-- ``SyncMutex``: A native mutex using the system synchronization framework; supports recursive locking and integrates with debugging tools.
+- ``SyncMutex``: A native mutex using the system synchronization framework (macOS 15.0+, iOS 18.0+); supports recursive locking and integrates with debugging tools.
+- ``OSAllocatedUnfairMutex``: A high-performance mutex using OS-allocated unfair locks (macOS 13.0+, iOS 16.0+).
 - ``QueueBarrier``: A mutex that uses dispatch queue barriers for synchronization; useful for queue-based concurrency patterns.
 - ``LockedValue``: A generic mutex-backed value container that allows custom locking strategies.
 
@@ -57,6 +58,14 @@ Queue.main.sync {
 }
 ```
 
+Perform asynchronous work:
+
+```swift
+Queue.main.async {
+    // Your task on main thread
+}
+```
+
 Create custom queues with explicit parameters:
 
 ```swift
@@ -65,6 +74,32 @@ let customQueue = Queue.custom(
     qos: .utility,
     attributes: .serial
 )
+
+customQueue.async {
+    // Your work here
+}
+```
+
+Use `DelayedQueue` for delayed or conditional execution:
+
+```swift
+// Execute after a delay
+let delayed = DelayedQueue.n.asyncAfter(deadline: .now() + 2, queue: .main)
+delayed.fire {
+    print("Executed after 2 seconds")
+}
+
+// Synchronous execution
+let sync = DelayedQueue.n.sync(.main)
+sync.fire {
+    print("Executed synchronously")
+}
+
+// Asynchronous execution
+let async = DelayedQueue.n.async(.background)
+async.fire {
+    print("Executed asynchronously")
+}
 ```
 
 ### Thread-Safe Value Access
@@ -83,6 +118,18 @@ counter.sync { value in
 let currentValue = counter.sync { value in
     return value
 }
+
+// Using dynamic callable syntax (functional style)
+counter { $0 += 1 }
+let doubled = counter { $0 * 2 }
+```
+
+Use `trySync` for non-blocking access:
+
+```swift
+if let value = counter.trySync({ $0 }) {
+    print("Current value: \(value)")
+}
 ```
 
 ### AtomicValue Properties
@@ -90,10 +137,24 @@ let currentValue = counter.sync { value in
 Use the `@AtomicValue` property wrapper for thread-safe properties:
 
 ```swift
-@AtomicValue(mutex: SyncMutex.self) var counter = 0
+@AtomicValue var counter = 0
 
-// The property is automatically thread-safe
+// Using sync method
 $counter.sync { $0 += 1 }
+
+// Using dynamic callable syntax (functional style)
+$counter { $0 = 10 }
+
+// Direct property access (thread-safe)
+counter = 5
+let value = counter
+```
+
+You can also specify a custom mutex type:
+
+```swift
+@AtomicValue(mutexing: SyncMutex.self) var counter = 0
+@AtomicValue(lock: .osAllocatedUnfair()) var highPerformance = 0
 ```
 
 ### Concurrency Workarounds
@@ -138,6 +199,45 @@ Task { @MainActor in
 }
 ```
 
+## Advanced Features
+
+### Dynamic Callable Syntax
+
+Both `Locking` and `Mutexing` protocols support `@dynamicCallable`, allowing functional-style syntax:
+
+```swift
+// Using Locking protocol
+let lock: Locking = AnyLock.default
+lock {
+    // Critical section
+    performWork()
+}
+
+// Using Mutexing protocol
+let counter = LockedValue(initialValue: 0)
+counter { $0 += 1 }
+let value = counter { $0 }
+
+// Using AtomicValue
+@AtomicValue var count = 0
+$count.sync { $0 += 1 }
+
+// Or using dynamic callable syntax (works for any type)
+$count { $0 += 1 }
+```
+
+### Dynamic Member Lookup
+
+`Mutexing` and `AtomicValue` support `@dynamicMemberLookup` for convenient property access:
+
+```swift
+@AtomicValue var user = User(name: "Alice", age: 30)
+
+// Thread-safe property access
+let name = user.name  // Automatically synchronized
+user.age = 31        // Thread-safe mutation
+```
+
 ## Best Practices
 
 1. **Keep Critical Sections Short**
@@ -155,9 +255,11 @@ Task { @MainActor in
    ```
 
 2. **Choose Appropriate Mutex Type**
-   - Use `SyncMutex` for general-purpose synchronization
+   - Use `SyncMutex` for general-purpose synchronization (macOS 15.0+, iOS 18.0+)
+   - Use `OSAllocatedUnfairMutex` for high-performance scenarios (macOS 13.0+, iOS 16.0+)
    - Use `QueueBarrier` when working with GCD queues
    - Use `LockedValue` when you need custom lock behavior
+   - Use `AnyLock.default` (recursive pthread) as a safe default
 
 3. **Handle Errors Properly**
    ```swift
@@ -170,11 +272,25 @@ Task { @MainActor in
    }
    ```
 
+4. **Use Try-Lock for Non-Blocking Operations**
+   ```swift
+   // Non-blocking access
+   if let result = lock.trySync({ computeValue() }) {
+       // Lock acquired, work completed
+   } else {
+       // Lock busy, handle accordingly
+   }
+   ```
+
 ## Requirements
 
-- iOS 13.0+ / macOS 10.15+ / tvOS 13.0+ / watchOS 6.0+
+- iOS 13.0+ / macOS 11.0+ / tvOS 13.0+ / watchOS 6.0+ / visionOS 1.0+
 - Swift 5.5+
 - Xcode 13.0+
+
+> **Note:** Some features require newer platform versions:
+> - `SyncMutex`: macOS 15.0+, iOS 18.0+, tvOS 18.0+, watchOS 11.0+, visionOS 2.0+
+> - `OSAllocatedUnfairMutex` / `OSAllocatedUnfairLock`: macOS 13.0+, iOS 16.0+, tvOS 16.0+, watchOS 9.0+
 
 ## Installation
 
