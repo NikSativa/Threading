@@ -306,7 +306,7 @@ final class READMEExamplesTests: XCTestCase {
     // MARK: - Additional Examples from Code Documentation
 
     func testDelayedQueueNamespaceExample() {
-        // Example from DelayedQueue documentation: .n.sync(.main)
+        /// Example from DelayedQueue documentation: .n.sync(.main)
         func performTask(in queue: DelayedQueue) {
             @AtomicValue
             var executed = false

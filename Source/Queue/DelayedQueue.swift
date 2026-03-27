@@ -48,17 +48,17 @@ extension DelayedQueue: Sendable {
         case .absent:
             workItem()
 
-        case .sync(let queue):
+        case let .sync(queue):
             queue.sync(execute: workItem)
 
-        case .async(let queue):
+        case let .async(queue):
             queue.async(execute: workItem)
 
-        case .asyncAfter(let deadline, let queue):
+        case let .asyncAfter(deadline, queue):
             queue.asyncAfter(deadline: deadline,
                              execute: workItem)
 
-        case .asyncAfterWithFlags(let deadline, let flags, let queue):
+        case let .asyncAfterWithFlags(deadline, flags, queue):
             queue.asyncAfter(deadline: deadline,
                              flags: flags,
                              execute: workItem)
@@ -83,17 +83,17 @@ public extension DelayedQueue {
         case .absent:
             workItem()
 
-        case .sync(let queue):
+        case let .sync(queue):
             queue.sync(execute: workItem)
 
-        case .async(let queue):
+        case let .async(queue):
             queue.async(execute: workItem)
 
-        case .asyncAfter(let deadline, let queue):
+        case let .asyncAfter(deadline, queue):
             queue.asyncAfter(deadline: deadline,
                              execute: workItem)
 
-        case .asyncAfterWithFlags(let deadline, let flags, let queue):
+        case let .asyncAfterWithFlags(deadline, flags, queue):
             queue.asyncAfter(deadline: deadline,
                              flags: flags,
                              execute: workItem)
