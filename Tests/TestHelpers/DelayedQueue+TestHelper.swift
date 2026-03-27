@@ -7,12 +7,12 @@ extension DelayedQueue: Equatable {
         switch (lhs, rhs) {
         case (.absent, .absent):
             return true
-        case (.async(let a), .async(let b)),
-             (.sync(let a), .sync(let b)):
+        case let (.async(a), .async(b)),
+             let (.sync(a), .sync(b)):
             return compare(a, b)
-        case (.asyncAfter(let a1, let a2), .asyncAfter(let b1, let b2)):
+        case let (.asyncAfter(a1, a2), .asyncAfter(b1, b2)):
             return a1 == b1 && compare(a2, b2)
-        case (.asyncAfterWithFlags(let a1, let a2, let a3), .asyncAfterWithFlags(let b1, let b2, let b3)):
+        case let (.asyncAfterWithFlags(a1, a2, a3), .asyncAfterWithFlags(b1, b2, b3)):
             return a1 == b1 && a2 == b2 && compare(a3, b3)
         case (.absent, _),
              (.async, _),
