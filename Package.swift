@@ -6,7 +6,7 @@ let package = Package(
     name: "Threading",
     platforms: [
         .iOS(.v16),
-        .macOS(.v13),
+        .macOS(.v14),
         .macCatalyst(.v16),
         .tvOS(.v16),
         .watchOS(.v9),
@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "ThreadingDynamic", type: .dynamic, targets: ["Threading"])
     ],
     dependencies: [
-        .package(url: "https://github.com/NikSativa/SpryKit.git", from: "3.0.2")
+        .package(url: "https://github.com/NikSativa/SpryKit.git", from: "3.1.0")
     ],
     targets: [
         .target(name: "Threading",
