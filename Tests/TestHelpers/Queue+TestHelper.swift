@@ -1,5 +1,4 @@
 import Foundation
-import SpryKit
 import Threading
 
 extension Queue: SpryEquatable {}
