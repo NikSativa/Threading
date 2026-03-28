@@ -1,69 +1,61 @@
-#if canImport(SpryMacroAvailable)
 import Foundation
-import SpryKit
 import Threading
 
-@Spryable
 final class FakeQueueable: Queueable, @unchecked Sendable {
     var shouldFireSyncClosures: Bool = false
     var asyncWorkItem: WorkItem?
 
+    private(set) var asyncCallCount: Int = 0
+    private(set) var syncCallCount: Int = 0
+    private(set) var asyncAfterCallCount: Int = 0
+    private(set) var lastDeadline: DispatchTime?
+    private(set) var lastFlags: Queue.Flags?
+
     func async(execute workItem: @escaping WorkItem) {
+        asyncCallCount += 1
         asyncWorkItem = workItem
-        return spryify(arguments: workItem)
     }
 
     func asyncAfter(deadline: DispatchTime, flags: Queue.Flags, execute work: @escaping WorkItem) {
+        asyncAfterCallCount += 1
+        lastDeadline = deadline
+        lastFlags = flags
         asyncWorkItem = work
-        return spryify(arguments: deadline, flags, work)
     }
 
     func sync(execute workItem: () -> Void) {
+        syncCallCount += 1
         if shouldFireSyncClosures {
             workItem()
         }
-
-        return spryify()
     }
 
     func sync(execute workItem: () throws -> Void) rethrows {
+        syncCallCount += 1
         if shouldFireSyncClosures {
             try workItem()
         }
-
-        return spryify()
     }
 
     func sync<T>(flags: Queue.Flags, execute work: () throws -> T) rethrows -> T {
-        if shouldFireSyncClosures {
-            return try spryify(arguments: flags, fallbackValue: work())
-        }
-
-        return spryify(arguments: flags)
+        syncCallCount += 1
+        lastFlags = flags
+        return try work()
     }
 
     func sync<T>(execute work: () throws -> T) rethrows -> T {
-        if shouldFireSyncClosures {
-            return try spryify(fallbackValue: work())
-        }
-
-        return spryify()
+        syncCallCount += 1
+        return try work()
     }
 
     func sync<T>(flags: Queue.Flags, execute work: () -> T) -> T {
-        if shouldFireSyncClosures {
-            return spryify(arguments: flags, fallbackValue: work())
-        }
-
-        return spryify(arguments: flags)
+        syncCallCount += 1
+        lastFlags = flags
+        return work()
     }
 
     func sync<T>(execute work: () -> T) -> T {
-        if shouldFireSyncClosures {
-            return spryify(fallbackValue: work())
-        }
-
-        return spryify()
+        syncCallCount += 1
+        return work()
     }
 }
-#endif
