@@ -1,5 +1,4 @@
 import Foundation
-import SpryKit
 import Threading
 
 extension DelayedQueue: Equatable {
