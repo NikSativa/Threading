@@ -1,6 +1,4 @@
-#if canImport(SpryMacroAvailable)
 import Foundation
-import SpryKit
 import Threading
 import XCTest
 
@@ -17,7 +15,6 @@ final class DelayedQueueTests: XCTestCase {
     func test_fake_queue_sync() {
         let queue: FakeQueueable = .init()
         queue.shouldFireSyncClosures = true
-        queue.stub(.syncWithExecute).andReturn()
 
         let subject: DelayedQueue = .sync(queue)
         let didCall = expectation(description: "didCall")
@@ -25,19 +22,18 @@ final class DelayedQueueTests: XCTestCase {
             didCall.fulfill()
         }
         wait(for: [didCall], timeout: 0)
-        XCTAssertHaveReceived(queue, .syncWithExecute)
+        XCTAssertEqual(queue.syncCallCount, 1)
     }
 
     func test_fake_queue_async() {
         let queue: FakeQueueable = .init()
-        queue.stub(.asyncWithExecute).andReturn()
 
         let subject: DelayedQueue = .async(queue)
         let didCall = expectation(description: "didCall")
         subject.fire {
             didCall.fulfill()
         }
-        XCTAssertHaveReceived(queue, .asyncWithExecute)
+        XCTAssertEqual(queue.asyncCallCount, 1)
 
         queue.asyncWorkItem?()
         wait(for: [didCall], timeout: 1)
@@ -47,14 +43,14 @@ final class DelayedQueueTests: XCTestCase {
         let dispatchTime = DispatchTime.delayInSeconds(1)
 
         let queue: FakeQueueable = .init()
-        queue.stub(.asyncAfterWithDeadline_Flags_Execute).andReturn()
 
         let subject: DelayedQueue = .asyncAfter(deadline: dispatchTime, queue: queue)
         let didCall = expectation(description: "didCall")
         subject.fire {
             didCall.fulfill()
         }
-        XCTAssertHaveReceived(queue, .asyncAfterWithDeadline_Flags_Execute, with: dispatchTime, Queue.Flags.absent, Argument.anything)
+        XCTAssertEqual(queue.asyncAfterCallCount, 1)
+        XCTAssertEqual(queue.lastFlags, .absent)
 
         queue.asyncWorkItem?()
         wait(for: [didCall], timeout: 0)
@@ -64,14 +60,14 @@ final class DelayedQueueTests: XCTestCase {
         let dispatchTime = DispatchTime.delayInSeconds(1)
 
         let queue: FakeQueueable = .init()
-        queue.stub(.asyncAfterWithDeadline_Flags_Execute).andReturn()
 
         let subject: DelayedQueue = .asyncAfterWithFlags(deadline: dispatchTime, flags: .barrier, queue: queue)
         let didCall = expectation(description: "didCall")
         subject.fire {
             didCall.fulfill()
         }
-        XCTAssertHaveReceived(queue, .asyncAfterWithDeadline_Flags_Execute, with: dispatchTime, Queue.Flags.barrier, Argument.anything)
+        XCTAssertEqual(queue.asyncAfterCallCount, 1)
+        XCTAssertEqual(queue.lastFlags, .barrier)
 
         queue.asyncWorkItem?()
         wait(for: [didCall], timeout: 0)
@@ -139,4 +135,3 @@ final class DelayedQueueTests: XCTestCase {
         wait(for: [didCall], timeout: 0.2)
     }
 }
-#endif
