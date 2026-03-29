@@ -24,7 +24,7 @@ let package = Package(
                     .process("PrivacyInfo.xcprivacy")
                 ],
                 swiftSettings: [
-                    .define("supportsVisionOS")
+                    .define("supportsVisionOS", .when(platforms: [.visionOS]))
                 ]),
         .testTarget(name: "ThreadingTests",
                     dependencies: [
@@ -32,7 +32,7 @@ let package = Package(
                     ],
                     path: "Tests",
                     swiftSettings: [
-                        .define("supportsVisionOS")
+                        .define("supportsVisionOS", .when(platforms: [.visionOS]))
                     ])
     ]
 )
