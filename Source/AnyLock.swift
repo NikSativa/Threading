@@ -99,6 +99,7 @@ public extension AnyLock {
         return .init(Foundation.NSLock())
     }
 
+    #if canImport(Darwin)
     /// Creates an `AnyLock` backed by an `UnfairLock`.
     ///
     /// This factory method creates a lock using a low-level unfair lock implementation,
@@ -114,6 +115,7 @@ public extension AnyLock {
     static func unfair() -> Self {
         return .init(UnfairLock())
     }
+    #endif
 
     #if canImport(os)
     /// Creates an `AnyLock` backed by an OS-allocated unfair lock.

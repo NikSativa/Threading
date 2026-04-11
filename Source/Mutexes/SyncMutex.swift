@@ -1,4 +1,4 @@
-#if canImport(Synchronization) && compiler(>=6.0)
+#if canImport(Synchronization) && compiler(>=6.1)
 import Foundation
 import Synchronization
 

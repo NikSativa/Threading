@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 /// A high-performance mutual exclusion primitive based on `os_unfair_lock`.
@@ -71,3 +72,4 @@ extension UnfairLock: Locking {
 }
 
 extension UnfairLock: @unchecked Sendable {}
+#endif

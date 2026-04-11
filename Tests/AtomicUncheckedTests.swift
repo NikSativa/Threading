@@ -45,6 +45,7 @@ final class AtomicUncheckedTests: XCTestCase {
         concurrent_access(counter: _counter, collector: _collector)
     }
 
+    #if canImport(Darwin)
     func test_init_with_locking_unfair() {
         @AtomicValue(lock: .unfair())
         var counter: MyNotSendable = 42
@@ -54,6 +55,7 @@ final class AtomicUncheckedTests: XCTestCase {
         var collector: [MyNotSendable] = []
         concurrent_access(counter: _counter, collector: _collector)
     }
+    #endif
 
     func test_init_with_locking_recursiveLock() {
         @AtomicValue(lock: .recursiveLock())
