@@ -51,7 +51,6 @@ public extension Queue {
     }
 }
 
-#if swift(>=6.0)
 public extension IsolatedMain {
     /// Executes a closure on the main thread with `@MainActor` isolation.
     ///
@@ -59,7 +58,6 @@ public extension IsolatedMain {
     /// context. Blocks the calling thread until execution completes.
     ///
     /// - Parameter closure: A closure isolated to the main actor.
-    /// - Note: Available when compiling with Swift 6.0 or later.
     ///
     /// ### Example
     /// ```swift
@@ -83,7 +81,6 @@ public extension IsolatedMain {
     ///
     /// - Parameter closure: A closure isolated to the main actor that returns a value.
     /// - Returns: The result produced by the closure.
-    /// - Note: Available when compiling with Swift 6.0 or later.
     ///
     /// ### Example
     /// ```swift
@@ -108,7 +105,6 @@ public extension IsolatedMain {
     /// - Parameter closure: A throwing closure isolated to the main actor that returns a value.
     /// - Returns: The result produced by the closure.
     /// - Throws: An error thrown by the closure.
-    /// - Note: Available when compiling with Swift 6.0 or later.
     ///
     /// ### Example
     /// ```swift
@@ -125,45 +121,3 @@ public extension IsolatedMain {
         }
     }
 }
-#else
-public extension IsolatedMain {
-    /// Executes a closure synchronously on the main thread.
-    ///
-    /// Blocks the calling thread until the closure completes.
-    ///
-    /// - Parameter closure: A closure to execute on the main thread.
-    @inline(__always)
-    static func sync(_ closure: () -> Void) {
-        return Queue.main.sync {
-            return closure()
-        }
-    }
-
-    /// Executes a closure synchronously on the main thread and returns a value.
-    ///
-    /// Blocks the calling thread until the closure completes.
-    ///
-    /// - Parameter closure: A closure to execute on the main thread.
-    /// - Returns: The result produced by the closure.
-    @inline(__always)
-    static func sync<T>(_ closure: () -> T) -> T {
-        return Queue.main.sync {
-            return closure()
-        }
-    }
-
-    /// Executes a throwing closure synchronously on the main thread and returns a value.
-    ///
-    /// Blocks the calling thread until the closure completes.
-    ///
-    /// - Parameter closure: A throwing closure to execute on the main thread.
-    /// - Returns: The result produced by the closure.
-    /// - Throws: An error thrown by the closure.
-    @inline(__always)
-    static func sync<T>(_ closure: () throws -> T) throws -> T {
-        return try Queue.main.sync {
-            return try closure()
-        }
-    }
-}
-#endif

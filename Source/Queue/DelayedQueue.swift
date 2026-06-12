@@ -16,7 +16,7 @@ import Foundation
 ///
 /// performTask(in: .n.async(.main))
 /// ```
-public enum DelayedQueue {
+public enum DelayedQueue: Sendable {
     /// Represents the absence of a queue; work is executed immediately on the current thread.
     case absent
     /// Executes work synchronously on the specified queue.
@@ -28,14 +28,10 @@ public enum DelayedQueue {
     case asyncAfter(deadline: DispatchTime, queue: Queueable)
     /// Executes work asynchronously on the specified queue after a given deadline with dispatch flags.
     case asyncAfterWithFlags(deadline: DispatchTime, flags: Queue.Flags, queue: Queueable)
-}
 
-#if swift(>=6.0)
-extension DelayedQueue: Sendable {
     /// Executes the provided work item based on the current queue strategy.
     ///
-    /// - Parameter workItem: A closure to execute. Must be `@Sendable` in Swift 6 or later.
-    /// - Note: This method dispatches work using the strategy defined by the case of `DelayedQueue`.
+    /// - Parameter workItem: A closure to execute.
     ///
     /// ### Example
     /// ```swift
@@ -65,42 +61,6 @@ extension DelayedQueue: Sendable {
         }
     }
 }
-#else
-public extension DelayedQueue {
-    /// Executes the provided work item based on the current queue strategy.
-    ///
-    /// - Parameter workItem: A closure to execute.
-    /// - Note: This method dispatches work using the strategy defined by the case of `DelayedQueue`.
-    ///
-    /// ### Example
-    /// ```swift
-    /// DelayedQueue.n.async(.global()).fire {
-    ///     print("Running on global queue")
-    /// }
-    /// ```
-    func fire(_ workItem: @escaping () -> Void) {
-        switch self {
-        case .absent:
-            workItem()
-
-        case let .sync(queue):
-            queue.sync(execute: workItem)
-
-        case let .async(queue):
-            queue.async(execute: workItem)
-
-        case let .asyncAfter(deadline, queue):
-            queue.asyncAfter(deadline: deadline,
-                             execute: workItem)
-
-        case let .asyncAfterWithFlags(deadline, flags, queue):
-            queue.asyncAfter(deadline: deadline,
-                             flags: flags,
-                             execute: workItem)
-        }
-    }
-}
-#endif
 
 // MARK: - DelayedQueue.n
 

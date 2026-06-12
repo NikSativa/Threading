@@ -192,9 +192,7 @@ private extension Queue.Attributes {
     }
 }
 
-#if swift(>=6.0)
 extension Queue: @unchecked Sendable {}
 extension Queue.Attributes: Sendable {}
 extension Queue.Flags: Sendable {}
 extension Queue.Kind: @unchecked Sendable {}
-#endif
