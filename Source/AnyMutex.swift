@@ -77,7 +77,7 @@ public extension AnyMutex {
         return .init(QueueBarrier(initialValue: value))
     }
 
-    #if canImport(Synchronization) && supportsVisionOS && compiler(>=6.0)
+    #if canImport(Synchronization) && compiler(>=6.1)
     /// Creates an `AnyMutex` using the system's native mutex implementation.
     ///
     /// This factory method creates a mutex using the system's built-in mutex implementation
@@ -153,7 +153,7 @@ public extension AnyMutex where Value: ExpressibleByNilLiteral {
     }
     #endif
 
-    #if canImport(Synchronization) && supportsVisionOS && compiler(>=6.0)
+    #if canImport(Synchronization) && compiler(>=6.1)
     /// Creates a mutex that protects a `nil` value using the system’s native mutex.
     ///
     /// This lock provides high-performance synchronization optimized for modern hardware.
@@ -204,7 +204,7 @@ public extension AnyMutex where Value: ExpressibleByArrayLiteral {
     }
     #endif
 
-    #if canImport(Synchronization) && supportsVisionOS && compiler(>=6.0)
+    #if canImport(Synchronization) && compiler(>=6.1)
     /// Creates a mutex that protects an empty array using the system’s native mutex.
     ///
     /// This lock provides high-performance synchronization optimized for modern hardware.
@@ -249,7 +249,7 @@ public extension AnyMutex where Value: ExpressibleByDictionaryLiteral {
     }
     #endif
 
-    #if canImport(Synchronization) && supportsVisionOS && compiler(>=6.0)
+    #if canImport(Synchronization) && compiler(>=6.1)
     /// Creates a mutex that protects an empty dictionary using the system’s native mutex.
     ///
     /// This lock provides high-performance synchronization optimized for modern hardware.
