@@ -167,6 +167,16 @@ public extension Queue {
                                 attributes: attributes.toSDK()))
     }
 
+    /// Compares two queues by their kind and by the identity of the underlying `DispatchQueue`.
+    ///
+    /// Two queues built from the same factory property are equal because they wrap the same
+    /// system queue, while two custom queues sharing a label are not — each owns its own
+    /// `DispatchQueue`. Written out rather than synthesized because `DispatchQueue` is not
+    /// `Equatable` in swift-corelibs-foundation.
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.kind == rhs.kind && lhs.sdk === rhs.sdk
+    }
+
     /// Indicates whether the queue represents the main thread.
     ///
     /// Primarily used internally for optimizations and thread assertions.

@@ -44,44 +44,6 @@ extension SyncMutex: MutexInitializable {}
 
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension SyncMutex: Mutexing {
-    /// Executes a closure while holding the lock, providing synchronized access to the protected value.
-    ///
-    /// - Parameter body: A `@Sendable` closure that receives an inout reference to the protected value.
-    /// - Returns: The result of the closure.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let mutex = SyncMutex(initialValue: [Int]())
-    /// mutex.sync { $0.append(1) }
-    /// ```
-    public func sync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R
-    where R: Sendable, Value: Sendable {
-        return try mutex.withLock { value in
-            return try body(&value)
-        }
-    }
-
-    /// Attempts to execute a closure if the lock is immediately available.
-    ///
-    /// - Parameter body: A `@Sendable` closure that receives an inout reference to the protected value.
-    /// - Returns: The result of the closure, or `nil` if the lock could not be acquired.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let mutex = SyncMutex(initialValue: "Hello")
-    /// if let result = mutex.trySync({ $0.append(" World") }) {
-    ///     print(result) // "Hello World"
-    /// }
-    /// ```
-    public func trySync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R?
-    where R: Sendable, Value: Sendable {
-        return try mutex.withLockIfAvailable { value in
-            return try body(&value)
-        }
-    }
-
     /// Executes a non-Sendable closure while holding the lock, providing synchronized access to the protected value.
     ///
     /// - Parameter body: A closure that receives an inout reference to the protected value.

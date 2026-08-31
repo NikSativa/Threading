@@ -43,44 +43,6 @@ extension OSAllocatedUnfairMutex: MutexInitializable {
 
 @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 extension OSAllocatedUnfairMutex: Mutexing {
-    /// Executes a closure while holding the lock, blocking the thread until access is granted.
-    ///
-    /// - Parameter body: A closure that receives a mutable reference to the protected value.
-    /// - Returns: The result produced by the closure.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let mutex = OSAllocatedUnfairMutex(initialValue: [1, 2, 3])
-    /// mutex.sync { $0.append(4) }
-    /// ```
-    public func sync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R
-    where R: Sendable, Value: Sendable {
-        return try mutex.withLock { value in
-            return try body(&value)
-        }
-    }
-
-    /// Attempts to execute a closure while holding the lock, only if the lock can be immediately acquired.
-    ///
-    /// - Parameter body: A closure that receives a mutable reference to the protected value.
-    /// - Returns: The result from the closure if the lock was acquired; otherwise, `nil`.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let result = mutex.trySync { value in
-    ///     value += 1
-    ///     return value
-    /// }
-    /// ```
-    public func trySync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R?
-    where R: Sendable, Value: Sendable {
-        return try mutex.withLockIfAvailable { value in
-            return try body(&value)
-        }
-    }
-
     /// Executes a closure while holding the lock without requiring the closure to be `Sendable`.
     ///
     /// - Parameter body: A non-Sendable closure that receives a mutable reference to the protected value.

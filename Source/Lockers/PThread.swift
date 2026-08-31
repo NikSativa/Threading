@@ -79,9 +79,9 @@ public final class PThread {
 
         switch kind {
         case .normal:
-            pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL)
+            pthread_mutexattr_settype(&attr, Int32(PTHREAD_MUTEX_NORMAL))
         case .recursive:
-            pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)
+            pthread_mutexattr_settype(&attr, Int32(PTHREAD_MUTEX_RECURSIVE))
         }
 
         guard pthread_mutex_init(&_lock, &attr) == 0 else {

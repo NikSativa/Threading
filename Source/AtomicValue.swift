@@ -185,45 +185,6 @@ public extension AtomicValue where Value: ExpressibleByDictionaryLiteral {
 }
 
 extension AtomicValue: Mutexing {
-    /// Performs a thread-safe, exclusive operation on the value.
-    ///
-    /// This method acquires the underlying lock, passes an `inout` reference of the value to the closure,
-    /// and returns the result. This is the preferred way to perform complex updates on the value.
-    ///
-    /// - Parameter body: A closure that receives an `inout` reference to the value and returns a result.
-    /// - Returns: The result of the closure.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let result = atomicValue.sync { value in
-    ///     value += 1
-    ///     return value
-    /// }
-    /// ```
-    public func sync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R
-    where R: Sendable, Value: Sendable {
-        return try innerValue.sync(body)
-    }
-
-    /// Attempts a thread-safe, exclusive operation on the value without blocking.
-    ///
-    /// This method is similar to `sync(_:)` but will return `nil` if the lock
-    /// could not be immediately acquired.
-    ///
-    /// - Parameter body: A closure that receives an `inout` reference to the value and returns a result.
-    /// - Returns: The result of the closure if the lock was acquired; otherwise, `nil`.
-    ///
-    /// ### Example
-    /// ```swift
-    /// if let result = atomicValue.trySync({ $0 += 1 }) {
-    ///     print("Updated: \(result)")
-    /// }
-    /// ```
-    public func trySync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R?
-    where R: Sendable, Value: Sendable {
-        return try innerValue.sync(body)
-    }
-
     /// Performs a thread-safe operation without enforcing `Sendable` constraints.
     ///
     /// Use this method only in performance-critical contexts where `Sendable` conformance cannot be satisfied

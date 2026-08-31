@@ -30,32 +30,9 @@ public protocol Mutexing<Value> {
     /// The type of value protected by the mutex.
     ///
     /// This associated type defines the type of value that is protected by the mutex.
-    /// The value type must conform to `Sendable` to ensure thread safety.
+    /// When it conforms to `Sendable`, the `Sendable`-checked `sync(_:)` and `trySync(_:)`
+    /// variants become available alongside the unchecked requirements below.
     associatedtype Value
-
-    /// Executes a closure with exclusive access to the protected value.
-    ///
-    /// This method blocks the calling thread until the lock is acquired, then passes
-    /// the value to the closure for safe mutation or inspection.
-    ///
-    /// - Parameter body: A closure that receives `inout` access to the protected value.
-    /// - Returns: The value returned by the closure.
-    /// - Throws: Any error thrown by the closure.
-    @discardableResult
-    func sync<R, V>(_ body: @Sendable (inout V) throws -> R) rethrows -> R
-        where R: Sendable, V: Sendable, V == Value
-
-    /// Attempts to execute a closure with exclusive access to the protected value without blocking.
-    ///
-    /// This method tries to acquire the lock. If successful, the closure is executed with
-    /// mutable access to the value. If the lock cannot be immediately acquired, `nil` is returned.
-    ///
-    /// - Parameter body: A closure that receives `inout` access to the protected value.
-    /// - Returns: The result from the closure, or `nil` if the lock was not available.
-    /// - Throws: Any error thrown by the closure.
-    @discardableResult
-    func trySync<R, V>(_ body: @Sendable (inout V) throws -> R) rethrows -> R?
-        where R: Sendable, V: Sendable, V == Value
 
     /// Executes a closure with exclusive access to the protected value.
     ///
@@ -81,6 +58,32 @@ public protocol Mutexing<Value> {
 }
 
 public extension Mutexing where Value: Sendable {
+    /// Executes a closure with exclusive access to the protected value.
+    ///
+    /// This method blocks the calling thread until the lock is acquired, then passes
+    /// the value to the closure for safe mutation or inspection.
+    ///
+    /// - Parameter body: A closure that receives `inout` access to the protected value.
+    /// - Returns: The value returned by the closure.
+    /// - Throws: Any error thrown by the closure.
+    @discardableResult
+    func sync<R: Sendable>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R {
+        return try syncUnchecked(body)
+    }
+
+    /// Attempts to execute a closure with exclusive access to the protected value without blocking.
+    ///
+    /// This method tries to acquire the lock. If successful, the closure is executed with
+    /// mutable access to the value. If the lock cannot be immediately acquired, `nil` is returned.
+    ///
+    /// - Parameter body: A closure that receives `inout` access to the protected value.
+    /// - Returns: The result from the closure, or `nil` if the lock was not available.
+    /// - Throws: Any error thrown by the closure.
+    @discardableResult
+    func trySync<R: Sendable>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R? {
+        return try trySyncUnchecked(body)
+    }
+
     /// Executes a closure while holding the lock, without accessing the protected value.
     ///
     /// This is a convenience method when mutation or reading of the value is not needed,
@@ -319,26 +322,26 @@ public extension Mutexing {
 
     /// Dynamically calls the mutex with a throwing closure that does not access the protected value (unchecked).
     ///
-    /// Bypasses `Sendable` checking. Use for non-thread-affecting critical sections.
+    /// Bypasses `Sendable` checking. Use only when `Value` does not conform to `Sendable`.
     ///
     /// - Parameter args: An array of throwing closures.
-    /// - Returns: The result of the first closure if available; otherwise, `nil`.
+    /// - Returns: The result of the first closure.
     /// - Throws: Any error thrown by the closure.
     ///
     /// ### Example
     /// ```swift
     /// let result = try mutex {
-    ///     log("Running critical section")
-    ///     return 42
+    ///     return try loadFromDisk()
     /// }
     /// ```
-    func dynamicallyCall<R>(withArguments args: [() throws -> R]) throws -> R? {
+    @discardableResult
+    func dynamicallyCall<R>(withArguments args: [() throws -> R]) throws -> R {
         precondition(args.count == 1, "Only one argument is allowed")
         guard let body = args.first else {
             fatalError("Expected a single closure")
         }
 
-        return try trySyncUnchecked(body)
+        return try syncUnchecked(body)
     }
 
     /// Dynamically calls the mutex with a non-throwing, sendable closure.

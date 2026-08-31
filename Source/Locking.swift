@@ -182,6 +182,7 @@ public extension Locking {
     ///     return "locked value"
     /// }
     /// ```
+    @discardableResult
     func dynamicallyCall(withArguments args: [@Sendable () throws -> Sendable]) throws -> Sendable? {
         guard let body = args.first else {
             return nil
@@ -203,6 +204,7 @@ public extension Locking {
     ///     return "safe access"
     /// }
     /// ```
+    @discardableResult
     func dynamicallyCall(withArguments args: [@Sendable () -> Sendable]) -> Sendable? {
         guard let body = args.first else {
             return nil

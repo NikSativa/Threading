@@ -120,16 +120,6 @@ public extension AnyMutex {
 }
 
 extension AnyMutex: Mutexing {
-    public func sync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R
-    where R: Sendable, Value: Sendable {
-        return try base.sync(body)
-    }
-
-    public func trySync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R?
-    where R: Sendable, Value: Sendable {
-        return try base.trySync(body)
-    }
-
     public func syncUnchecked<R>(_ body: (inout Value) throws -> R) rethrows -> R {
         return try base.syncUnchecked(body)
     }

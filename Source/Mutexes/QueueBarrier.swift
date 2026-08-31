@@ -80,39 +80,6 @@ extension QueueBarrier: MutexInitializable {
 }
 
 extension QueueBarrier: Mutexing {
-    /// Executes a closure that reads or mutates the protected value synchronously.
-    ///
-    /// - Parameter body: A closure that receives an inout reference to the value.
-    /// - Returns: The result of the closure.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ### Example
-    /// ```swift
-    /// let barrier = QueueBarrier(initialValue: 10)
-    /// let doubled = barrier.sync { value in
-    ///     value *= 2
-    ///     return value
-    /// }
-    /// ```
-    public func sync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R
-    where R: Sendable, Value: Sendable {
-        return try queue.sync(flags: .barrier) {
-            return try body(&value)
-        }
-    }
-
-    /// Executes a closure conditionally if the queue is available without blocking.
-    ///
-    /// - Parameter body: A closure that receives an inout reference to the value.
-    /// - Returns: The result of the closure, or `nil` if the operation couldn't proceed.
-    /// - Throws: Any error thrown by the closure.
-    public func trySync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R?
-    where R: Sendable, Value: Sendable {
-        return try queue.sync(flags: .barrier) {
-            return try body(&value)
-        }
-    }
-
     /// Executes a non-Sendable closure that reads or mutates the protected value.
     ///
     /// - Parameter body: A non-Sendable closure that receives an inout reference to the value.

@@ -64,50 +64,6 @@ extension LockedValue: MutexInitializable {
 }
 
 extension LockedValue: Mutexing {
-    /// Performs a thread-safe, blocking mutation of the stored value.
-    ///
-    /// This method blocks the calling thread until the lock is acquired,
-    /// ensuring exclusive access to the value during the execution of the closure.
-    ///
-    /// - Parameter body: A `@Sendable` closure that receives an `inout` reference to the value.
-    /// - Returns: The result of the closure.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ## Example
-    /// ```swift
-    /// let locked = LockedValue(initialValue: [Int]())
-    /// locked.sync { $0.append(42) }
-    /// ```
-    public func sync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R
-    where R: Sendable, Value: Sendable {
-        return try locker.sync {
-            return try body(&value)
-        }
-    }
-
-    /// Attempts a thread-safe, non-blocking mutation of the stored value.
-    ///
-    /// If the lock is available, it executes the closure and returns the result;
-    /// otherwise, it returns `nil` without blocking.
-    ///
-    /// - Parameter body: A `@Sendable` closure that receives an `inout` reference to the value.
-    /// - Returns: The result of the closure if the lock was acquired; otherwise, `nil`.
-    /// - Throws: Any error thrown by the closure.
-    ///
-    /// ## Example
-    /// ```swift
-    /// let locked = LockedValue(initialValue: 1)
-    /// if let newValue = try locked.trySync({ $0 += 1; return $0 }) {
-    ///     print(newValue)
-    /// }
-    /// ```
-    public func trySync<R>(_ body: @Sendable (inout Value) throws -> R) rethrows -> R?
-    where R: Sendable, Value: Sendable {
-        return try locker.trySync {
-            return try body(&value)
-        }
-    }
-
     /// Performs a thread-safe, blocking mutation without requiring the closure to be `Sendable`.
     ///
     /// - Parameter body: A non-Sendable closure that receives an `inout` reference to the value.
