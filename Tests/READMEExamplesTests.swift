@@ -143,7 +143,7 @@ final class READMEExamplesTests: XCTestCase {
 
     func testAtomicValueWithCustomMutex() {
         // Example: @AtomicValue(mutexing: SyncMutex.self)
-        #if canImport(os)
+        #if canImport(Synchronization) && compiler(>=6.1)
         if #available(macOS 15.0, iOS 18.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *) {
             @AtomicValue(mutexing: SyncMutex.self)
             var counter = 0
